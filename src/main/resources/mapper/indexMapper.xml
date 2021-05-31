@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.parmarcy.mapper.indexMapper">
+    <select id="getParmarcy" resultType="com.example.parmarcy.vo.parmarcyVo">
+       SELECT dutyName
+             ,wgs84Lat
+             ,wgs84Lon
+       FROM pharmacy.pharmarcySeoul;
+    </select>
+</mapper>
+
