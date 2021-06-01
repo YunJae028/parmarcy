@@ -1,124 +1,131 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
-<html lang="ko">
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-    <title>간단한 지도 표시하기</title>
-    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=a4vj6jrblt"></script>
+    <meta charset="utf-8">
+    <title>마커 생성하기</title>
+
 </head>
 <body>
-<div id="map" style="width:100%;height:400px;"></div>
+<button id="search">재검색</button>
+<div id="map" style="width:100%;height:800px;"></div>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0eec856fe65fd0106ad48250e458cae0&libraries=services"></script>
+<script>
 
-    <script type="text/javascript">
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new kakao.maps.LatLng(37.686040837930676, 127.04676347327286), // 지도의 중심좌표
+            level: 2 // 지도의 확대 레벨
+        };
 
-    var m = new Array();
+    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-    var t = new Array();
+    var bounds = null; // 현재 위치
+    var markers = [];
 
-    <c:set var="i" value="0" />
+    // 주소-좌표 변환 객체를 생성합니다
+    var geocoder = new kakao.maps.services.Geocoder();
 
-    <c:choose>
+    // 주소로 좌표를 검색합니다
+    geocoder.addressSearch('은평구 역촌동', function(result, status) {
 
-    <c:when test="${!empty result}">
+        // 정상적으로 검색이 완료됐으면
+        if (status === kakao.maps.services.Status.OK) {
+            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
 
-    <c:forEach items="${result}" var="result">
+            // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+            map.setCenter(coords);
 
-    m[${i}] = new naver.maps.LatLng(${result.wgs84Lat},${result.wgs84Lon});
+            getInfo();
 
-    t[${i}] = '${result.dutyName}';
+            //마커 표시
+            <c:forEach var="point" items="${list}">
+            setMarkerInfo("<c:out value="${point.wgs84Lat}"/>", "<c:out value="${point.wgs84Lon}"/>");
+            </c:forEach>
 
-    <c:set var="i" value="${i+1}" />
-
-    </c:forEach>
-
-    </c:when>
-
-    <c:otherwise>
-
-    m[0] = new naver.maps.LatLng(37.56661, 126.978388);
-
-    t[0] = '검색결과가 없습니다.'
-
-    </c:otherwise>
-
-    </c:choose>
-
-    //var defaultLevel = 7;
-
-    //var map = new naver.maps.Map('map',{
-
-    var map = new naver.maps.Map(document.getElementById('map'), {
-        //  center : new naver.maps.LatLng(37.566285,126.977960),
-        center : new naver.maps.LatLng(m[0]),
-
-        zoom : 6,
-
-        size : new naver.maps.Size(890, 250)
-
+        }
     });
 
+    //마커 생성 함수
+    function setMarkerInfo(lat, lng){
+        // 현재위치에서 해당하는 위치 반환
+        if(bounds.pa >= lat && bounds.qa <= lat && bounds.ha <= lng && bounds.oa >= lng ){
+            var markerPosition = new kakao.maps.LatLng(lat, lng);
 
-    var markers = [],infoWindows = [];
-
-    for (var ii=0; ii<m.length; ii++) {
-
-        var icon = {
-
-                url: 'http://static.naver.net/maps/v3/pin_default.png',
-                size: new naver.maps.Size(24, 37),
-                anchor: new naver.maps.Point(12, 37),
-                origin: new naver.maps.Point(ii * 29, 0)
-
-            },
-
-            marker = new naver.maps.Marker({
-
-                position: m[ii],
-                map: map,
-                icon: icon,
-                shadow: {
-
-                    url: 'http://static.naver.net/maps/v3/pin_default.png',
-
-                    size: new naver.maps.Size(40, 35),
-                    origin: new naver.maps.Point(0, 0),
-                    anchor: new naver.maps.Point(11, 35)
-
-                }
-
+            marker = new kakao.maps.Marker({
+                position: markerPosition
             });
 
-        var infoWindow = new naver.maps.InfoWindow({ content:t[ii] });
+            marker.setMap(this.map);
 
-        markers.push(marker);
-        infoWindows.push(infoWindow);
-
+            markers.push(marker);
+        }
     }
 
+    // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
+    // marker.setMap(null);
 
-    // 해당 마커의 인덱스를 seq라는 클로저 변수로 저장하는 이벤트 핸들러를 반환합니다.
+    // 정보
+    function getInfo() {
+        // 지도의 현재 중심좌표를 얻어옵니다
+        var center = map.getCenter();
+        console.log(center);
 
-    function getClickHandler(seq) {
-        return function(e) {
-            var marker = markers[seq];
-            var infoWindow = infoWindows[seq];
+        // 지도의 현재 레벨을 얻어옵니다
+        var level = map.getLevel();
+        console.log(level);
 
-            if (infoWindow.getMap()) {
-                infoWindow.close();
-            } else {
-                infoWindow.open(map, marker);
-            }
+        // 지도타입을 얻어옵니다
+        var mapTypeId = map.getMapTypeId();
+        console.log(mapTypeId);
+
+        // 지도의 현재 영역을 얻어옵니다
+        bounds = map.getBounds();
+        console.log(bounds);
+
+        // 영역의 남서쪽 좌표를 얻어옵니다
+        var swLatLng = bounds.getSouthWest();
+        console.log(swLatLng);
+
+        // 영역의 북동쪽 좌표를 얻어옵니다
+        var neLatLng = bounds.getNorthEast();
+        console.log(neLatLng);
+
+        // 영역정보를 문자열로 얻어옵니다. ((남,서), (북,동)) 형식입니다
+        var boundsStr = bounds.toString();
+
+
+        var message = '지도 중심좌표는 위도 ' + center.getLat() + ', <br>';
+        message += '경도 ' + center.getLng() + ' 이고 <br>';
+        message += '지도 레벨은 ' + level + ' 입니다 <br> <br>';
+        message += '지도 타입은 ' + mapTypeId + ' 이고 <br> ';
+        message += '지도의 남서쪽 좌표는 ' + swLatLng.getLat() + ', ' + swLatLng.getLng() + ' 이고 <br>';
+        message += '북동쪽 좌표는 ' + neLatLng.getLat() + ', ' + neLatLng.getLng() + ' 입니다';
+
+        // 개발자도구를 통해 직접 message 내용을 확인해 보세요.
+        // ex) console.log(message);
+    }
+
+    // 배열에 추가된 마커들을 지도에 표시하거나 삭제하는 함수입니다
+    function setMarkers(map) {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setMap(map);
         }
     }
 
 
-    for (var i=0; i<markers.length; i++) {
-        naver.maps.Event.addListener(markers[i],  'click', getClickHandler(i));
-    }
+    $('#search').click(function (){
+        setMarkers(null);
+
+        bounds = map.getBounds();
+
+        //마커 표시
+        <c:forEach var="point" items="${list}">
+        setMarkerInfo("<c:out value="${point.wgs84Lat}"/>", "<c:out value="${point.wgs84Lon}"/>");
+        </c:forEach>
+    });
+
 
 </script>
 </body>
