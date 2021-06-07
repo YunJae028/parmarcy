@@ -2,10 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.parmarcy.mapper.indexMapper">
     <select id="getParmarcy" resultType="com.example.parmarcy.vo.parmarcyVo">
-       SELECT dutyName
-             ,wgs84Lat
-             ,wgs84Lon
-       FROM pharmacy.pharmarcySeoul;
+        SELECT T.*
+             , (CASE
+                    WHEN STR_TO_DATE(CLOSETIME, '%H%i') >= str_to_date(DATE_FORMAT(now(), '%H%i'), '%H%i') AND
+                         DATE_FORMAT(now(), '%H%i') >= STR_TO_DATE(OPENTIME, '%H%i')
+                        THEN '1'
+                    ELSE '0'
+            END) AS CHECKOPEN
+        FROM (
+                 SELECT dutyName
+                      , wgs84Lat
+                      , wgs84Lon
+                      , (CASE
+                             WHEN WEEKDAY(NOW()) = 0
+                                 THEN dutyTime1s
+                             WHEN WEEKDAY(NOW()) = 1
+                                 THEN dutyTime2s
+                             WHEN WEEKDAY(NOW()) = 2
+                                 THEN dutyTime3s
+                             WHEN WEEKDAY(NOW()) = 3
+                                 THEN dutyTime4s
+                             WHEN WEEKDAY(NOW()) = 4
+                                 THEN dutyTime5s
+                             WHEN WEEKDAY(NOW()) = 5
+                                 THEN dutyTime6s
+                      END) AS OPENTIME
+                      , (CASE
+                             WHEN WEEKDAY(NOW()) = 0
+                                 THEN dutyTime1c
+                             WHEN WEEKDAY(NOW()) = 1
+                                 THEN dutyTime2c
+                             WHEN WEEKDAY(NOW()) = 2
+                                 THEN dutyTime3c
+                             WHEN WEEKDAY(NOW()) = 3
+                                 THEN dutyTime4c
+                             WHEN WEEKDAY(NOW()) = 4
+                                 THEN dutyTime5c
+                             WHEN WEEKDAY(NOW()) = 5
+                                 THEN dutyTime6c
+                     END) AS CLOSETIME
+                 FROM pharmacy.pharmarcySeoul) T;
     </select>
 </mapper>
-

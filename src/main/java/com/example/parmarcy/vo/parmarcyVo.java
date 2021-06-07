@@ -4,6 +4,7 @@ public class parmarcyVo {
     private String dutyName;
     private String wgs84Lat;
     private String wgs84Lon;
+    private String checkopen;
 
     public String getDutyName() {
         return dutyName;
@@ -27,5 +28,13 @@ public class parmarcyVo {
 
     public void setWgs84Lon(String wgs84Lon) {
         this.wgs84Lon = wgs84Lon;
+    }
+
+    public String getCheckopen() {
+        return checkopen;
+    }
+
+    public void setCheckopen(String checkopen) {
+        this.checkopen = checkopen;
     }
 }
