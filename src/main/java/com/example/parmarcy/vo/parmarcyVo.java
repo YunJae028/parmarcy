@@ -5,6 +5,7 @@ public class parmarcyVo {
     private String wgs84Lat;
     private String wgs84Lon;
     private String checkopen;
+    private String hpid;
 
     public String getDutyName() {
         return dutyName;
@@ -36,5 +37,13 @@ public class parmarcyVo {
 
     public void setCheckopen(String checkopen) {
         this.checkopen = checkopen;
+    }
+
+    public String getHpid() {
+        return hpid;
+    }
+
+    public void setHpid(String hpid) {
+        this.hpid = hpid;
     }
 }

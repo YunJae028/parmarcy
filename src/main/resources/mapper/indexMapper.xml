@@ -13,6 +13,7 @@
                  SELECT dutyName
                       , wgs84Lat
                       , wgs84Lon
+                      , hpid
                       , (CASE
                              WHEN WEEKDAY(NOW()) = 0
                                  THEN dutyTime1s

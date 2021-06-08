@@ -41,14 +41,14 @@
 
             //마커 표시
             <c:forEach var="point" items="${list}">
-            setMarkerInfo("<c:out value="${point.wgs84Lat}"/>", "<c:out value="${point.wgs84Lon}"/>","<c:out value="${point.checkopen}"/>");
+            setMarkerInfo("<c:out value="${point.wgs84Lat}"/>", "<c:out value="${point.wgs84Lon}"/>","<c:out value="${point.checkopen}"/>","<c:out value="${point.hpid}"/>");
             </c:forEach>
 
         }
     });
 
     //마커 생성 함수
-    function setMarkerInfo(lat, lng,checkopen){
+    function setMarkerInfo(lat, lng,checkopen, hpid){
         // 현재위치에서 해당하는 위치 반환
         if(bounds.pa >= lat && bounds.qa <= lat && bounds.ha <= lng && bounds.oa >= lng ){
 
@@ -66,7 +66,8 @@
 
             marker = new kakao.maps.Marker({
                 position: markerPosition,
-                image : markerImage
+                image : markerImage,
+                hpid : hpid
             });
 
             marker.setMap(this.map);
@@ -75,8 +76,21 @@
         }
     }
 
+    // 마커를 클릭했을 때 커스텀 오버레이를 표시합니다
+    kakao.maps.event.addListener(marker, 'click', function() {
+        marker.getHpid();
+        overlay.setMap(map);
+    });
+
+    var overlay = new kakao.maps.CustomOverlay({
+        content: content,
+        map: map,
+        position: marker.getPosition()
+    });
+
     // 아래 코드는 지도 위의 마커를 제거하는 코드입니다
     // marker.setMap(null);
+
 
     // 정보
     function getInfo() {
