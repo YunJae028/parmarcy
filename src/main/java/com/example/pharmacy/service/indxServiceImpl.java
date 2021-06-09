@@ -1,9 +1,8 @@
-package com.example.parmarcy.service;
+package com.example.pharmacy.service;
 
-import com.example.parmarcy.mapper.indexMapper;
-import com.example.parmarcy.vo.parmarcyVo;
+import com.example.pharmacy.mapper.indexMapper;
+import com.example.pharmacy.vo.pharmacyInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,7 +13,7 @@ public class indxServiceImpl implements indexService{
 
     private final indexMapper mapper;
 
-    public List<parmarcyVo> getParmarcy() {
+    public List<pharmacyInfo> getParmarcy() {
         return mapper.getParmarcy();
     }
 }

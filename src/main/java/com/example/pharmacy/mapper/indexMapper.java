@@ -1,6 +1,6 @@
-package com.example.parmarcy.mapper;
+package com.example.pharmacy.mapper;
 
-import com.example.parmarcy.vo.parmarcyVo;
+import com.example.pharmacy.vo.pharmacyInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 @Mapper
 public interface indexMapper {
-    List<parmarcyVo> getParmarcy();
+    List<pharmacyInfo> getParmarcy();
 
 }

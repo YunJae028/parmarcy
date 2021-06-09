@@ -1,11 +1,13 @@
-package com.example.parmarcy.vo;
+package com.example.pharmacy.vo;
 
-public class parmarcyVo {
+public class pharmacyInfo {
     private String dutyName;
     private String wgs84Lat;
     private String wgs84Lon;
     private String checkopen;
     private String hpid;
+    private String dutyTel1;
+    private String dutyAddr;
 
     public String getDutyName() {
         return dutyName;
@@ -45,5 +47,21 @@ public class parmarcyVo {
 
     public void setHpid(String hpid) {
         this.hpid = hpid;
+    }
+
+    public String getDutyTel1() {
+        return dutyTel1;
+    }
+
+    public void setDutyTel1(String dutyTel1) {
+        this.dutyTel1 = dutyTel1;
+    }
+
+    public String getDutyAddr() {
+        return dutyAddr;
+    }
+
+    public void setDutyAddr(String dutyAddr) {
+        this.dutyAddr = dutyAddr;
     }
 }

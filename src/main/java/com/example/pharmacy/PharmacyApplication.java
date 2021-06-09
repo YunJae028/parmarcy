@@ -1,14 +1,13 @@
-package com.example.parmarcy;
+package com.example.pharmacy;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-public class ParmarcyApplication {
+public class PharmacyApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ParmarcyApplication.class, args);
+        SpringApplication.run(PharmacyApplication.class, args);
     }
 
 }
