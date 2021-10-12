@@ -1,4 +1,4 @@
-package com.example.pharmacy.vo;
+package com.dongyang.pharmacy.vo;
 
 public class pharmacyInfo {
     private String dutyName;

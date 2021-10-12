@@ -27,20 +27,45 @@
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0eec856fe65fd0106ad48250e458cae0&libraries=services"></script>
 <script>
+    // 현재 위치 이용하여 약국 검색
+    if (navigator.geolocation) {
 
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
             center: new kakao.maps.LatLng(37.686040837930676, 127.04676347327286), // 지도의 중심좌표
             level: 2 // 지도의 확대 레벨
         };
 
-    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
-    var bounds = null; // 현재 위치
-    var markers = [];
-    var infoWindows = [];
+        var bounds = null; // 현재 위치
+        var markers = [];
+        var infoWindows = [];
 
-    // 주소-좌표 변환 객체를 생성합니다
+        // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+        navigator.geolocation.getCurrentPosition(function(position) {
+
+            var lat = position.coords.latitude, // 위도
+                lon = position.coords.longitude; // 경도
+
+            var coords = new kakao.maps.LatLng(lat, lon);
+
+            // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+            map.setCenter(coords);
+
+            getInfo();
+
+            //마커 표시
+            <c:forEach var="point" items="${list}">
+            setMarkerInfo("<c:out value="${point.wgs84Lat}"/>", "<c:out value="${point.wgs84Lon}"/>","<c:out value="${point.checkopen}"/>","<c:out value="${point.hpid}"/>","<c:out value="${point.dutyName}"/>","<c:out value="${point.dutyTel1}"/>","<c:out value="${point.dutyAddr}"/>");
+            </c:forEach>
+
+          });
+
+    }
+
+    // 주소를 받아서 검색
+  /*  // 주소-좌표 변환 객체를 생성합니다
     var geocoder = new kakao.maps.services.Geocoder();
 
     // 주소로 좌표를 검색합니다
@@ -61,7 +86,9 @@
             </c:forEach>
 
         }
-    });
+    });*/
+
+    // 약품으로 검색 -> 관리자 구현 후 가능
 
     //마커 생성 함수
     function setMarkerInfo(lat, lng,checkopen, hpid, dutyName, dutyTel, dutyAddr){
@@ -193,8 +220,7 @@
         setMarkerInfo("<c:out value="${point.wgs84Lat}"/>", "<c:out value="${point.wgs84Lon}"/>","<c:out value="${point.checkopen}"/>","<c:out value="${point.hpid}"/>","<c:out value="${point.dutyName}"/>","<c:out value="${point.dutyTel1}"/>","<c:out value="${point.dutyAddr}"/>");
         </c:forEach>
     });
-
-
 </script>
+
 </body>
 </html>

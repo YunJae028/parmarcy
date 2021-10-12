@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.pharmacy.mapper.indexMapper">
-    <select id="getParmarcy" resultType="com.example.pharmacy.vo.pharmacyInfo">
+<mapper namespace="com.dongyang.pharmacy.mapper.SearchPharmacyMapper">
+    <select id="getParmarcy" resultType="com.dongyang.pharmacy.vo.pharmacyInfo">
         SELECT T.*
              , (CASE
                     WHEN STR_TO_DATE(CLOSETIME, '%H%i') >= str_to_date(DATE_FORMAT(now(), '%H%i'), '%H%i') AND
