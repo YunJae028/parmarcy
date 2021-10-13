@@ -4,7 +4,7 @@
     <select id="getParmarcy" resultType="com.dongyang.pharmacy.vo.pharmacyInfo">
         SELECT T.*
              , (CASE
-                    WHEN STR_TO_DATE(CLOSETIME, '%H%i') >= str_to_date(DATE_FORMAT(now(), '%H%i'), '%H%i') AND
+                    WHEN STR_TO_DATE(CLOSETIME, '%H%i') >= STR_TO_DATE(DATE_FORMAT(now(), '%H%i'), '%H%i') AND
                          DATE_FORMAT(now(), '%H%i') >= STR_TO_DATE(OPENTIME, '%H%i')
                         THEN '1'
                     ELSE '0'
