@@ -11,23 +11,19 @@
 
     <%@ include file="header.jsp" %>
     <body>
-    <div class="map-container">
-        <div class ="list-area">
-            <div id="mySidebar" class="sidebar">
-                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-                <a href="#">About</a>
-                <a href="#">Services</a>
-                <a href="#">Clients</a>
-                <a href="#">Contact</a>
-            </div>
-            <button class="openbtn" onclick="openNav()">☰ Open Sidebar</button>
-        </div>
-
         <div class="map-area">
-            <button id="search">재검색</button>
-            <div id="map" style="width:80%;height:500px;"></div>
+            <button class="openbtn" onclick="openNav()">☰ Open List</button>
+            <div class="list-area" style="left:0px; position: absolute;">
+                <div id="mySidebar" class="sidebar">
+                    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+                    <ul>
+
+                    </ul>
+                </div>
+            </div>
+            <button id="search" style="position: absolute;right: 86px; margin-top: 100px;">재검색</button>
+            <div id="map" style="position: relative; width: 1600px;height: 700px;margin-left: 300px;"></div>
         </div>
-    </div>
     </body>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -60,7 +56,26 @@
             // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
             map.setCenter(coords);
 
+            var center = map.getCenter();
             getInfo();
+
+            var params = {
+                currentLat : lat,
+                currentLon : lon,
+                centerLat : center.Ma,
+                centerLon : center.La
+            }
+
+            // 현재 위치에서 약국 검색
+            $.ajax({
+                url:"/pharmacyList",
+                type:"GET",
+                dataType:"json",
+                data : params,
+                success:function (data){
+
+                }
+            });
 
             //마커 표시
             <c:forEach var="point" items="${list}">
@@ -172,7 +187,7 @@
     function getInfo() {
         // 지도의 현재 중심좌표를 얻어옵니다
         var center = map.getCenter();
-        console.log(center);
+        console.log("center :", center);
 
         // 지도의 현재 레벨을 얻어옵니다
         var level = map.getLevel();
@@ -205,6 +220,7 @@
         message += '지도의 남서쪽 좌표는 ' + swLatLng.getLat() + ', ' + swLatLng.getLng() + ' 이고 <br>';
         message += '북동쪽 좌표는 ' + neLatLng.getLat() + ', ' + neLatLng.getLng() + ' 입니다';
 
+        console.log(message);
         // 개발자도구를 통해 직접 message 내용을 확인해 보세요.
         // ex) console.log(message);
     }
@@ -232,13 +248,13 @@
 
   <script>
 function openNav() {
-  document.getElementById("mySidebar").style.width = "250px";
-  document.getElementById("main").style.marginLeft = "250px";
+  document.getElementById("mySidebar").style.width = "300px";
+  document.getElementById("map").style.marginLeft = "300px";
 }
 
 function closeNav() {
   document.getElementById("mySidebar").style.width = "0";
-  document.getElementById("main").style.marginLeft= "0";
+  document.getElementById("map").style.marginLeft= "0px";
 }
 </script>
 

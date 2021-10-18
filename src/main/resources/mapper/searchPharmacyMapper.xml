@@ -46,4 +46,54 @@
                      END) AS CLOSETIME
                  FROM pharmacy.pharmarcySeoul) T;
     </select>
+
+    <select id="getPharmacyList" parameterType="com.dongyang.pharmacy.vo.pharmacySearchInfo" resultType="com.dongyang.pharmacy.vo.pharmacyInfo">
+                   SELECT T.*
+             , (CASE
+                    WHEN STR_TO_DATE(CLOSETIME, '%H%i') >= STR_TO_DATE(DATE_FORMAT(now(), '%H%i'), '%H%i') AND
+                         DATE_FORMAT(now(), '%H%i') >= STR_TO_DATE(OPENTIME, '%H%i')
+                        THEN '1'
+                    ELSE '0'
+            END) AS CHECKOPEN
+        FROM (
+                 SELECT dutyName
+                      , wgs84Lat
+                      , wgs84Lon
+                      , hpid
+                      , dutyTel1
+                      , dutyAddr
+                      , (CASE
+                             WHEN WEEKDAY(NOW()) = 0
+                                 THEN dutyTime1s
+                             WHEN WEEKDAY(NOW()) = 1
+                                 THEN dutyTime2s
+                             WHEN WEEKDAY(NOW()) = 2
+                                 THEN dutyTime3s
+                             WHEN WEEKDAY(NOW()) = 3
+                                 THEN dutyTime4s
+                             WHEN WEEKDAY(NOW()) = 4
+                                 THEN dutyTime5s
+                             WHEN WEEKDAY(NOW()) = 5
+                                 THEN dutyTime6s
+                      END) AS OPENTIME
+                      , (CASE
+                             WHEN WEEKDAY(NOW()) = 0
+                                 THEN dutyTime1c
+                             WHEN WEEKDAY(NOW()) = 1
+                                 THEN dutyTime2c
+                             WHEN WEEKDAY(NOW()) = 2
+                                 THEN dutyTime3c
+                             WHEN WEEKDAY(NOW()) = 3
+                                 THEN dutyTime4c
+                             WHEN WEEKDAY(NOW()) = 4
+                                 THEN dutyTime5c
+                             WHEN WEEKDAY(NOW()) = 5
+                                 THEN dutyTime6c
+                     END) AS CLOSETIME
+                 FROM pharmacy.pharmarcySeoul
+                 WHERE wgs84Lat  <![CDATA[ >= ]]> #{centerLat} AND wgs84Lon <![CDATA[ <= ]]> #{centerLon}
+            ) T;
+    </select>
+
+
 </mapper>
