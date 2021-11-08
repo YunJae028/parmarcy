@@ -8,7 +8,9 @@ import lombok.Setter;
 public class pharmacySearchInfo {
      private Double currentLat;
      private Double currentLon;
-     private Double centerLat;
-     private Double centerLon;
+     private Double swLat;
+     private Double swLng;
+     private Double neLat;
+     private Double neLng;
 
 }

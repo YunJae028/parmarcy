@@ -56,14 +56,30 @@
             // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
             map.setCenter(coords);
 
+             bounds = map.getBounds();
             var center = map.getCenter();
-            getInfo();
+           // getInfo();
+        // 영역의 남서쪽 좌표를 얻어옵니다
+            var swLatLng = bounds.getSouthWest();
+            console.log('남서쪽 : ', swLatLng);
+
+            // 영역의 북동쪽 좌표를 얻어옵니다
+            var neLatLng = bounds.getNorthEast();
+           console.log('북동쪽 : ', neLatLng);
+           console.log('북동쪽 Lat : ', neLatLng.getLat());
+           console.log('북동쪽 Lng : ', neLatLng.getLng());
+
+            // 영역정보를 문자열로 얻어옵니다. ((남,서), (북,동)) 형식입니다
+            var boundsStr = bounds.toString();
+            console.log('영역정보 문자열 : ', boundsStr);
 
             var params = {
                 currentLat : lat,
                 currentLon : lon,
-                centerLat : center.Ma,
-                centerLon : center.La
+                swLat : swLatLng.getLat(),
+                swLng : swLatLng.getLng(),
+                neLat : neLatLng.getLat(),
+                neLng : neLatLng.getLng()
             }
 
             // 현재 위치에서 약국 검색
@@ -73,7 +89,7 @@
                 dataType:"json",
                 data : params,
                 success:function (data){
-
+                    console.log('ajax :', data);
                 }
             });
 

@@ -48,7 +48,7 @@
     </select>
 
     <select id="getPharmacyList" parameterType="com.dongyang.pharmacy.vo.pharmacySearchInfo" resultType="com.dongyang.pharmacy.vo.pharmacyInfo">
-                   SELECT T.*
+                SELECT T.*
              , (CASE
                     WHEN STR_TO_DATE(CLOSETIME, '%H%i') >= STR_TO_DATE(DATE_FORMAT(now(), '%H%i'), '%H%i') AND
                          DATE_FORMAT(now(), '%H%i') >= STR_TO_DATE(OPENTIME, '%H%i')
@@ -91,7 +91,8 @@
                                  THEN dutyTime6c
                      END) AS CLOSETIME
                  FROM pharmacy.pharmarcySeoul
-                 WHERE wgs84Lat  <![CDATA[ >= ]]> #{centerLat} AND wgs84Lon <![CDATA[ <= ]]> #{centerLon}
+                 WHERE wgs84Lat BETWEEN #{swLat} AND #{neLat}
+                   AND wgs84Lon BETWEEN #{swLng} AND #{neLng}
             ) T;
     </select>
 
