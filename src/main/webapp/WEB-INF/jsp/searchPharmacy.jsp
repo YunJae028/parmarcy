@@ -19,6 +19,7 @@
                         <div id="list"></div>
                 </div>
             </div>
+            <input id="place" />
             <button id="search" style="position: absolute;right: 86px; margin-top: 100px;">재검색</button>
             <div id="map" style="position: relative; width: 1600px;height: 700px;margin-left: 300px;"></div>
         </div>
@@ -102,29 +103,6 @@
 
     }
 
-    // 주소를 받아서 검색
-  /*  // 주소-좌표 변환 객체를 생성합니다
-    var geocoder = new kakao.maps.services.Geocoder();
-
-    // 주소로 좌표를 검색합니다
-    geocoder.addressSearch('은평구 역촌동', function(result, status) {
-
-        // 정상적으로 검색이 완료됐으면
-        if (status === kakao.maps.services.Status.OK) {
-            var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-            // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
-            map.setCenter(coords);
-
-            getInfo();
-
-            //마커 표시
-            <c:forEach var="point" items="${list}">
-            setMarkerInfo("<c:out value="${point.wgs84Lat}"/>", "<c:out value="${point.wgs84Lon}"/>","<c:out value="${point.checkopen}"/>","<c:out value="${point.hpid}"/>","<c:out value="${point.dutyName}"/>","<c:out value="${point.dutyTel1}"/>","<c:out value="${point.dutyAddr}"/>");
-            </c:forEach>
-
-        }
-    });*/
 
     // 약품으로 검색 -> 관리자 구현 후 가능
 
@@ -268,6 +246,29 @@
 
         bounds = map.getBounds();
         var center = map.getCenter();
+
+        // 주소를 받아서 검색
+
+        // 주소-좌표 변환 객체를 생성합니다
+        var geocoder = new kakao.maps.services.Geocoder();
+
+        var address = $('#place').val();
+        if(address != null){
+            // 주소로 좌표를 검색합니다
+            geocoder.addressSearch(address , function(result, status) {
+            console.log(address)
+                // 정상적으로 검색이 완료됐으면
+                if (status === kakao.maps.services.Status.OK) {
+                    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                    // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+                    map.setCenter(coords);
+
+            }
+            });
+        }
+
+
     // 영역의 남서쪽 좌표를 얻어옵니다
         var swLatLng = bounds.getSouthWest();
         console.log('남서쪽 : ', swLatLng);
