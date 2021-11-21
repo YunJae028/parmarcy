@@ -198,6 +198,7 @@
             });
 
             marker.setMap(map);
+
             var content = '<div class="wrap">' +
                 '    <div class="info">' +
                 '        <div class="title">' +
@@ -241,19 +242,20 @@
         }
     }
 
-    $('#search').click(function (){
-         setMarkers(null);
+    $('#search').on('click',function (){
+        $("#list").empty();
+        setMarkers(null);
 
         bounds = map.getBounds();
-        var center = map.getCenter();
 
         // 주소를 받아서 검색
-
         // 주소-좌표 변환 객체를 생성합니다
         var geocoder = new kakao.maps.services.Geocoder();
 
         var address = $('#place').val();
-        if(address != null){
+
+        // 주소 있으면 해당 주소로 검색
+        if(address != null && address != ''){
             // 주소로 좌표를 검색합니다
             geocoder.addressSearch(address , function(result, status) {
             console.log(address)
@@ -263,19 +265,16 @@
 
                     // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
                     map.setCenter(coords);
-
-            }
+                }
             });
         }
 
-
-    // 영역의 남서쪽 좌표를 얻어옵니다
+        // 영역의 남서쪽 좌표를 얻어옵니다
         var swLatLng = bounds.getSouthWest();
         console.log('남서쪽 : ', swLatLng);
 
         // 영역의 북동쪽 좌표를 얻어옵니다
         var neLatLng = bounds.getNorthEast();
-
 
         // 영역정보를 문자열로 얻어옵니다. ((남,서), (북,동)) 형식입니다
         var boundsStr = bounds.toString();
@@ -306,10 +305,6 @@
             }
         });
 
-        //마커 표시
-/*        <c:forEach var="point" items="${list}">
-        setMarkerInfo("<c:out value="${point.wgs84Lat}"/>", "<c:out value="${point.wgs84Lon}"/>","<c:out value="${point.checkopen}"/>","<c:out value="${point.hpid}"/>","<c:out value="${point.dutyName}"/>","<c:out value="${point.dutyTel1}"/>","<c:out value="${point.dutyAddr}"/>");
-        </c:forEach>*/
     });
 
 </script>
