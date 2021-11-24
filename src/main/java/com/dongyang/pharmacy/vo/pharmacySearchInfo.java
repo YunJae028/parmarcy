@@ -12,5 +12,6 @@ public class pharmacySearchInfo {
      private Double swLng;
      private Double neLat;
      private Double neLng;
+     private String searchOption;
 
 }

@@ -9,6 +9,9 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/img/favicons/favicon-16x16.png">
     <link rel="shortcut icon" type="image/x-icon" href="/img/favicons/favicon.ico">
     <link rel="manifest" href="/img/favicons/manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet">
     <meta name="msapplication-TileImage" content="/img/favicons/mstile-150x150.png">
     <meta name="theme-color" content="#ffffff">
 

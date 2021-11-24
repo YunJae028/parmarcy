@@ -21,9 +21,6 @@ public class SearchPharmacyServiceImpl implements searchPharmacyService {
 
     @Override
     public List<pharmacyInfo> getPharmacyList(pharmacySearchInfo info) {
-        // 0.0016
-        Double lat = info.getCurrentLat();
-        Double lon = info.getCurrentLon();
         return mapper.getPharmacyList(info);
     }
 }

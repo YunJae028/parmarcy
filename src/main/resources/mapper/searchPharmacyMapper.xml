@@ -91,9 +91,28 @@
                                  THEN dutyTime6c
                      END) AS CLOSETIME
                  FROM pharmacy.pharmarcySeoul
-                 WHERE wgs84Lat BETWEEN #{swLat} AND #{neLat}
-                   AND wgs84Lon BETWEEN #{swLng} AND #{neLng}
+                 <if test = "swLat != '' and swLat != null ">
+                     WHERE wgs84Lat BETWEEN #{swLat} AND #{neLat}
+                 </if>
+                 <if test = "swLng != '' and swLng != null">
+                     AND wgs84Lon BETWEEN #{swLng} AND #{neLng}
+                 </if>
             ) T;
+    </select>
+
+    <select id="getDrugList" parameterType="com.dongyang.pharmacy.vo.pharmacySearchInfo" resultType="com.dongyang.pharmacy.vo.pharmacyInfo">
+        SELECT *
+          FROM pharmacy.drugInventory D
+         WHERE hpid = #{hpid}
+    </select>
+
+    <select id="getSearchDrug" parameterType="com.dongyang.pharmacy.vo.pharmacySearchInfo" resultType="com.dongyang.pharmacy.vo.pharmacyInfo">
+        SELECT *
+          FROM pharmacy.pharmarcySeoul P
+           INNER JOIN pharmacy.drugInventory D ON P.hpid = D.hpid
+         WHERE wgs84Lat BETWEEN #{swLat} AND #{neLat}
+           AND wgs84Lon BETWEEN #{swLng} AND #{neLng}
+           AND D.drugName LIKE '%'#{drugName}'%'
     </select>
 
 
