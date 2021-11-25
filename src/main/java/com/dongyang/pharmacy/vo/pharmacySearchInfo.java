@@ -13,5 +13,6 @@ public class pharmacySearchInfo {
      private Double neLat;
      private Double neLng;
      private String searchOption;
+     private String hpid;
 
 }

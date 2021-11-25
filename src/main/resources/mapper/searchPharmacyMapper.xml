@@ -100,7 +100,7 @@
             ) T;
     </select>
 
-    <select id="getDrugList" parameterType="com.dongyang.pharmacy.vo.pharmacySearchInfo" resultType="com.dongyang.pharmacy.vo.pharmacyInfo">
+    <select id="getDrugList" parameterType="com.dongyang.pharmacy.vo.pharmacySearchInfo" resultType="com.dongyang.pharmacy.vo.drugInfo">
         SELECT *
           FROM pharmacy.drugInventory D
          WHERE hpid = #{hpid}

@@ -1,6 +1,7 @@
 package com.dongyang.pharmacy.controller;
 
 import com.dongyang.pharmacy.service.searchPharmacyService;
+import com.dongyang.pharmacy.vo.drugInfo;
 import com.dongyang.pharmacy.vo.pharmacyInfo;
 import com.dongyang.pharmacy.vo.pharmacySearchInfo;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,12 @@ public class SearchPharmacyController {
     public @ResponseBody List<pharmacyInfo> getPharmacyList(pharmacySearchInfo info){
         List<pharmacyInfo> pharmacyList = service.getPharmacyList(info);
         return pharmacyList;
+    }
+
+    @GetMapping("/drugList")
+    public @ResponseBody List<drugInfo> getDrugList(pharmacySearchInfo info){
+        List<drugInfo> drugList = service.getDrugList(info);
+        return drugList;
     }
 
 

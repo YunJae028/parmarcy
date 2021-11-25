@@ -1,6 +1,7 @@
 package com.dongyang.pharmacy.service;
 
 import com.dongyang.pharmacy.mapper.SearchPharmacyMapper;
+import com.dongyang.pharmacy.vo.drugInfo;
 import com.dongyang.pharmacy.vo.pharmacyInfo;
 import com.dongyang.pharmacy.vo.pharmacySearchInfo;
 import lombok.RequiredArgsConstructor;
@@ -23,4 +24,10 @@ public class SearchPharmacyServiceImpl implements searchPharmacyService {
     public List<pharmacyInfo> getPharmacyList(pharmacySearchInfo info) {
         return mapper.getPharmacyList(info);
     }
+
+    @Override
+    public List<drugInfo> getDrugList(pharmacySearchInfo info) {
+        return mapper.getDrugList(info);
+    }
+
 }

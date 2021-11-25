@@ -12,7 +12,7 @@
     <%@ include file="header.jsp" %>
     <body>
         <div class="map-area">
-            <button class="openbtn" onclick="openNav()">☰ Open List</button>
+            <button class="openbtn" onclick="openNav()">💊 Open List</button>
             <div class="list-area" style="left:0px; position: absolute;">
                 <div id="mySidebar" class="sidebar">
                     <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
@@ -29,6 +29,21 @@
             <button id="currentSearch" style="position: absolute;right: 86px; margin-top: 100px;">현재 위치에서 검색</button>
             <div id="map" style="position: relative; width: 1550px;height: 700px;margin-left: 350px;"></div>
         </div>
+
+        <div class="background">
+          <div class="window">
+            <div class="popup">
+              <button id="closePop">×</button>
+              <div id="drugList">
+
+              </div>
+            </div>
+            <div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+
     </body>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -157,7 +172,8 @@
 
             var marker = new kakao.maps.Marker({
                 position: markerPosition,
-                image : markerImage
+                image : markerImage,
+                text : item.dutyName,
             });
 
             getInfoWindow(marker,item);
@@ -284,17 +300,27 @@
                 searchMarkerInfo(data);
                 $.each(data, function (index, item) {
                     if(item.checkopen == '0'){
-                        var checkOpen = '운영종료';
-                    } else {var checkOpen = '운영중';}
-                    $("#list").append("<ul id='dutyName'>" + item.dutyName + "</ul>");
-                    $("#list").append("<ul id='dutyAddr'>" + item.dutyAddr + "</ul>");
-                    $("#list").append("<ul id='dutyTel'>" + item.dutyTel1 + "</ul>");
-                    $("#list").append("<ul id='checkOpen'>" + checkOpen + "</ul>");
-                    $("#list").append("<button id='dutyInventory'>"+"약품재고"+"</button>");
+                        var checkOpen = '운영종료 😞';
+                    } else {var checkOpen = '운영중 😊';}
+                    var hpid = item.hpid;
+                    var dutyName =  'dutyName' + index;
+                    var dutyAddr =  'dutyAddr' + index;
+                    var dutyTel = 'dutyTel' + index;
+                    var checkOpenId =  'checkOpen' + index;
+                    var dutyInventory =  'dutyInventory' + index;
+                    $("#list").append("<ul id=\"" +  dutyName + "\" class='dutyName'>" + item.dutyName + "</ul>");
+                    $("#list").append("<ul id=\"" +  dutyAddr + "\" class='dutyAddr'>" + item.dutyAddr + "</ul>");
+                    $("#list").append("<ul id=\"" +  dutyTel + "\" class='dutyTel'>" + item.dutyTel1 + "</ul>");
+                    $("#list").append("<ul id=\"" +  checkOpenId + "\" class='checkOpen'>" + checkOpen + "</ul>");
+                    $("#list").append("<button id=\"" +  dutyInventory + "\" class='dutyInventory'>"+"약품재고"+"</button>");
+                    document.getElementById(dutyInventory).addEventListener("click", function() {
+                        inventoryPop(hpid);
+                    }, false);
                 });
             }
         });
     }
+
 </script>
 
 <script>
@@ -307,6 +333,39 @@ function closeNav() {
   document.getElementById("mySidebar").style.width = "0";
   document.getElementById("map").style.marginLeft= "0px";
 }
+
+function inventoryPop(srchHpid){
+
+    show();
+
+        var params = {
+            hpid : srchHpid
+        };
+
+        // 약품 재고 리스트 확인
+        $.ajax({
+            url: "/drugList",
+            type: "GET",
+            dataType: "json",
+            data: params,
+            success: function (data) {
+                // $.each(data, function (index, item) {
+                //
+                // });
+
+            }
+        });
+}
+
+  function show() {
+    document.querySelector(".background").className = "background show";
+  }
+
+  function closePop() {
+    document.querySelector(".background").className = "background";
+  }
+
+  document.querySelector("#closePop").addEventListener("click", closePop);
 </script>
 
 </html>
