@@ -19,14 +19,13 @@
                         <div id="list"></div>
                 </div>
             </div>
-            <select name="searchOption">
-                <option value="">검색옵션</option>
+            <select name="searchOption" id="placeOption">
                 <option value="place">위치</option>
                 <option value="drug">약품명</option>
             </select>
             <input id="place" />
-            <button id="search" style="position: absolute;right: 20px; margin-top: 100px;">검색</button>
-            <button id="currentSearch" style="position: absolute;right: 86px; margin-top: 100px;">현재 위치에서 검색</button>
+            <button id="search">검색</button>
+            <button id="currentSearch">현재 위치에서 검색</button>
             <div id="map" style="position: relative; width: 1550px;height: 700px;margin-left: 350px;"></div>
         </div>
 
@@ -35,7 +34,6 @@
             <div class="popup">
               <button id="closePop">×</button>
               <div id="drugList">
-
               </div>
             </div>
             <div>
@@ -92,32 +90,7 @@
                 var boundsStr = bounds.toString();
                 console.log('영역정보 문자열 : ', boundsStr);
 
-                var params = {
-                    currentLat : lat,
-                    currentLon : lon,
-                    swLat : swLatLng.getLat(),
-                    swLng : swLatLng.getLng(),
-                    neLat : neLatLng.getLat(),
-                    neLng : neLatLng.getLng()
-                }
-
-                // 현재 위치에서 약국 검색
-                $.ajax({
-                url:"/pharmacyList",
-                type:"GET",
-                dataType:"json",
-                data : params,
-                success:function (data){
-                    console.log('ajax :', data);
-                    //마커 표시
-                     searchMarkerInfo(data);
-                     $.each(data, function (index, item){
-                         $("#list").append("<ul>"+item.dutyName + "</ul>");
-                         $("#list").append("<ul>"+item.dutyAddr+"</ul>");
-                         $("#list").append("<ul>"+item.dutyTel1+"</ul>");
-                     });
-                }
-            });
+                searchPharmacy();
 
         });
         } else {
@@ -176,7 +149,7 @@
                 text : item.dutyName,
             });
 
-            getInfoWindow(marker,item);
+            getInfoWindow(marker,item,index);
 
             marker.setMap(map);
 
@@ -186,7 +159,11 @@
         });
     }
 
-    function getInfoWindow(marker,item){
+    function getInfoWindow(marker,item,index){
+        if(item.checkopen == '0'){
+        var checkOpen = '운영종료 😞';
+        } else {var checkOpen = '운영중 😊';}
+        var dutyInventory =  'dutyInventory' + index;
         var content = '<div class="wrap">' +
             '    <div class="info">' +
             '        <div class="title">' +
@@ -196,10 +173,22 @@
             '        <div class="body">' +
             '                <div class="ellipsis"> '+ item.dutyAddr+ '</div>' +
             '                <div class="jibun ellipsis">'+ item.dutyTel1+ '</div>' +
-            '                <div class="jibun ellipsis">'+ status + '</div>' +
+            '                <div class="checkOpen">'+ checkOpen + '</div>' +
+            '               "<button id=+ dutyInventory + ' + 'class=dutyInventory>'+ "약품재고"+ "</button>"
             '        </div>' +
             '    </div>' +
             '</div>';
+
+        console.log(content);
+        var hpid = item.hpid;
+        console.log(hpid);
+
+
+/*
+        document.getElementById(dutyInventory).addEventListener("click", function() {
+            inventoryPop(hpid);
+        });
+*/
 
         var infoWindow = new kakao.maps.CustomOverlay({
             content: content,
@@ -299,23 +288,27 @@
                 //마커 표시
                 searchMarkerInfo(data);
                 $.each(data, function (index, item) {
-                    if(item.checkopen == '0'){
+                    if(data == null || data == ''){
+                        $("#list").append("현재 위치에 검색 가능한 약국이 없습니다.");
+                    } else {
+                        if(item.checkopen == '0'){
                         var checkOpen = '운영종료 😞';
-                    } else {var checkOpen = '운영중 😊';}
-                    var hpid = item.hpid;
-                    var dutyName =  'dutyName' + index;
-                    var dutyAddr =  'dutyAddr' + index;
-                    var dutyTel = 'dutyTel' + index;
-                    var checkOpenId =  'checkOpen' + index;
-                    var dutyInventory =  'dutyInventory' + index;
-                    $("#list").append("<ul id=\"" +  dutyName + "\" class='dutyName'>" + item.dutyName + "</ul>");
-                    $("#list").append("<ul id=\"" +  dutyAddr + "\" class='dutyAddr'>" + item.dutyAddr + "</ul>");
-                    $("#list").append("<ul id=\"" +  dutyTel + "\" class='dutyTel'>" + item.dutyTel1 + "</ul>");
-                    $("#list").append("<ul id=\"" +  checkOpenId + "\" class='checkOpen'>" + checkOpen + "</ul>");
-                    $("#list").append("<button id=\"" +  dutyInventory + "\" class='dutyInventory'>"+"약품재고"+"</button>");
-                    document.getElementById(dutyInventory).addEventListener("click", function() {
-                        inventoryPop(hpid);
-                    }, false);
+                        } else {var checkOpen = '운영중 😊';}
+                        var hpid = item.hpid;
+                        var dutyName =  'dutyName' + index;
+                        var dutyAddr =  'dutyAddr' + index;
+                        var dutyTel = 'dutyTel' + index;
+                        var checkOpenId =  'checkOpen' + index;
+                        var dutyInventory =  'dutyInventory' + index;
+                        $("#list").append("<ul id=\"" +  dutyName + "\" class='dutyName'>" + item.dutyName + "</ul>");
+                        $("#list").append("<ul id=\"" +  dutyAddr + "\" class='dutyAddr'>" + item.dutyAddr + "</ul>");
+                        $("#list").append("<ul id=\"" +  dutyTel + "\" class='dutyTel'>" + item.dutyTel1 + "</ul>");
+                        $("#list").append("<ul id=\"" +  checkOpenId + "\" class='checkOpen'>" + checkOpen + "</ul>");
+                        $("#list").append("<button id=\"" +  dutyInventory + "\" class='dutyInventory'>"+"약품재고"+"</button>");
+                        document.getElementById(dutyInventory).addEventListener("click", function() {
+                            inventoryPop(hpid);
+                        }, false);
+                    }
                 });
             }
         });
@@ -327,15 +320,23 @@
 function openNav() {
   document.getElementById("mySidebar").style.width = "350px";
   document.getElementById("map").style.marginLeft = "350px";
+  // document.getElementById("place").style.marginLeft= "350px";
+  // document.getElementById("placeOption").style.marginLeft= "350px";
+  // document.getElementById("search").style.marginLeft= "350px";
+  // document.getElementById("currentSearch").style.marginLeft= "350px";
 }
 
 function closeNav() {
   document.getElementById("mySidebar").style.width = "0";
   document.getElementById("map").style.marginLeft= "0px";
+  // document.getElementById("place").style.marginLeft= "0px";
+  // document.getElementById("placeOption").style.marginLeft= "0px";
+  // document.getElementById("search").style.marginLeft= "0px";
+  // document.getElementById("currentSearch").style.marginLeft= "0px";
 }
 
 function inventoryPop(srchHpid){
-
+    $("#drugList").empty();
     show();
 
         var params = {
@@ -349,10 +350,16 @@ function inventoryPop(srchHpid){
             dataType: "json",
             data: params,
             success: function (data) {
-                // $.each(data, function (index, item) {
-                //
-                // });
-
+                if(data == null || data == ''){
+                     $("#drugList").append("<div style='font-size: 20px;font-weight: bold;color: #ff8080;margin-bottom: 8px;margin-left: 6%;'>재고 정보가 없습니다</div>");
+                } else {
+                     $("#drugList").append("<div style='font-size: 20px;font-weight: bold;color: #ff8080;margin-bottom: 8px;margin-left: 6%;'>약품 재고</div>");
+                    $.each(data, function (index, item) {
+                    $("#drugList").append("<ul class = 'dutyName' >"+ ' 약품명 : '+ item.drugName + "</ul>");
+                    $("#drugList").append("<ul class = 'dutyAddr'>"+ ' 제조사 : ' + item.manName + "</ul>");
+                    $("#drugList").append("<ul class = 'dragCnt' >"+ ' 남은 수량: ' + item.cnt + "</ul>");
+                });
+                }
             }
         });
 }
