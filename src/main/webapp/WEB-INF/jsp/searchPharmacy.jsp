@@ -118,7 +118,6 @@
             });
         }
 
-    // 약품으로 검색 -> 관리자 구현 후 가능
 
     function closeOverlay() {
         for (var i=0;i<infoWindows.length;i++) {
@@ -174,21 +173,10 @@
             '                <div class="ellipsis"> '+ item.dutyAddr+ '</div>' +
             '                <div class="jibun ellipsis">'+ item.dutyTel1+ '</div>' +
             '                <div class="checkOpen">'+ checkOpen + '</div>' +
-            '               "<button id=+ dutyInventory + ' + 'class=dutyInventory>'+ "약품재고"+ "</button>"
             '        </div>' +
             '    </div>' +
             '</div>';
 
-        console.log(content);
-        var hpid = item.hpid;
-        console.log(hpid);
-
-
-/*
-        document.getElementById(dutyInventory).addEventListener("click", function() {
-            inventoryPop(hpid);
-        });
-*/
 
         var infoWindow = new kakao.maps.CustomOverlay({
             content: content,
@@ -214,9 +202,15 @@
     }
 
     $('#search').on('click',function () {
+
         $("#list").empty();
         setMarkers(null);
 
+        var searchOption = $("#placeOption option:selected").val();
+
+        console.log(searchOption);
+
+        if(searchOption === 'place'){
         // 주소를 받아서 검색
         // 주소-좌표 변환 객체를 생성합니다
         var geocoder = new kakao.maps.services.Geocoder();
@@ -236,6 +230,11 @@
                     searchPharmacy(coords);
                 }
             });
+        } else {
+
+        }
+        } else if(searchOption === 'drug'){
+             searchPharmacy();
         }
     });
 
@@ -271,7 +270,8 @@
         console.log('영역정보 문자열 : ', boundsStr);
 
         var params = {
-            searchOption : $("#searchOption option:selected").val(),
+            searchOption : $("#placeOption option:selected").val(),
+            searchDrugNm : $('#place').val(),
             swLat: swLatLng.getLat(),
             swLng: swLatLng.getLng(),
             neLat: neLatLng.getLat(),
@@ -354,6 +354,7 @@ function inventoryPop(srchHpid){
                      $("#drugList").append("<div style='font-size: 20px;font-weight: bold;color: #ff8080;margin-bottom: 8px;margin-left: 6%;'>재고 정보가 없습니다</div>");
                 } else {
                      $("#drugList").append("<div style='font-size: 20px;font-weight: bold;color: #ff8080;margin-bottom: 8px;margin-left: 6%;'>약품 재고</div>");
+                    // $("#drugList").append("<input id = 'srchDrug' />");
                     $.each(data, function (index, item) {
                     $("#drugList").append("<ul class = 'dutyName' >"+ ' 약품명 : '+ item.drugName + "</ul>");
                     $("#drugList").append("<ul class = 'dutyAddr'>"+ ' 제조사 : ' + item.manName + "</ul>");
@@ -373,6 +374,45 @@ function inventoryPop(srchHpid){
   }
 
   document.querySelector("#closePop").addEventListener("click", closePop);
+
+// 원래의 인풋 박스 값을 받는다.
+var oldVal = $("#srchDrug");
+
+/* 검색 내용 변경 감지 */
+$("#srchDrug").on("propertychange change keyup paste input", function () {
+  // 변화에 바로바로 반응하면 부하가 걸릴 수 있어서 1초 딜레이를 준다.
+  setTimeout(function () {
+    // 변경된 현재 박스 값을 받아온다.
+    var currentVal = $("#srchDrug").val();
+    if (currentVal == oldVal) {
+      return;
+    }
+    // 클래스로 box를 가지고 있는 태그들을 배열화 시킴
+    var listArray = $(".dutyName").toArray();
+
+    // forEach의 첫번째 인자값 = 배열 내 현재 값
+    // 두번째 값 = index
+    // 세번째 값 = 현재 배열
+    listArray.forEach(function (c, i) {
+      var currentList = c;
+      // 현재 배열값에서 내용 추출
+      var currentListText = c.innerText;
+      // 검색 내용을 포함하지 않을 경우
+      if (currentListText.includes(currentVal) == false) {
+        currentList.style.display = "none";
+      }
+      // 검색 내용을 포함할 경우
+      if (currentListText.includes(currentVal)) {
+        currentList.style.display = "block";
+      }
+      // 검색 내용이 없을 경우
+      if (currentVal.trim() == "") {
+        currentList.style.display = "block";
+      }
+    });
+  }, 1000);
+});
+
 </script>
 
 </html>

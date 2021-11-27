@@ -15,6 +15,8 @@ public interface SearchPharmacyMapper {
 
     List<pharmacyInfo> getPharmacyList(pharmacySearchInfo info);
 
+    List<pharmacyInfo> getSearchDrug(pharmacySearchInfo info);
+
     List<drugInfo> getDrugList(pharmacySearchInfo info);
 
 }

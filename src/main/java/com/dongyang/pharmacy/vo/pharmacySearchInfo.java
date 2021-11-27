@@ -14,5 +14,6 @@ public class pharmacySearchInfo {
      private Double neLng;
      private String searchOption;
      private String hpid;
+     private String searchDrugNm;
 
 }

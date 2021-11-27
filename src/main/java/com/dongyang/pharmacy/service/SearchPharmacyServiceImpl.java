@@ -22,7 +22,17 @@ public class SearchPharmacyServiceImpl implements searchPharmacyService {
 
     @Override
     public List<pharmacyInfo> getPharmacyList(pharmacySearchInfo info) {
-        return mapper.getPharmacyList(info);
+
+        String  searchOption = info.getSearchOption();
+
+        List<pharmacyInfo> list = null;
+
+        if(searchOption == null || searchOption.equals("place")){
+             list =  mapper.getPharmacyList(info);
+        } else {
+            list = mapper.getSearchDrug(info);
+        }
+        return list;
     }
 
     @Override

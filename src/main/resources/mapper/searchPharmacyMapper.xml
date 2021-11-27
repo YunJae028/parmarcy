@@ -107,13 +107,58 @@
     </select>
 
     <select id="getSearchDrug" parameterType="com.dongyang.pharmacy.vo.pharmacySearchInfo" resultType="com.dongyang.pharmacy.vo.pharmacyInfo">
-        SELECT *
-          FROM pharmacy.pharmarcySeoul P
-           INNER JOIN pharmacy.drugInventory D ON P.hpid = D.hpid
-         WHERE wgs84Lat BETWEEN #{swLat} AND #{neLat}
-           AND wgs84Lon BETWEEN #{swLng} AND #{neLng}
-           AND D.drugName LIKE '%'#{drugName}'%'
+         SELECT T.*
+             , (CASE
+                    WHEN STR_TO_DATE(CLOSETIME, '%H%i') >= STR_TO_DATE(DATE_FORMAT(now(), '%H%i'), '%H%i') AND
+                         DATE_FORMAT(now(), '%H%i') >= STR_TO_DATE(OPENTIME, '%H%i')
+                        THEN '1'
+                    ELSE '0'
+            END) AS CHECKOPEN
+         FROM (
+                 SELECT DISTINCT P.hpid
+                      , P.dutyName
+                      , P.wgs84Lat
+                      , P.wgs84Lon
+                      , P.dutyTel1
+                      , P.dutyAddr
+                      , (CASE
+                             WHEN WEEKDAY(NOW()) = 0
+                                 THEN dutyTime1s
+                             WHEN WEEKDAY(NOW()) = 1
+                                 THEN dutyTime2s
+                             WHEN WEEKDAY(NOW()) = 2
+                                 THEN dutyTime3s
+                             WHEN WEEKDAY(NOW()) = 3
+                                 THEN dutyTime4s
+                             WHEN WEEKDAY(NOW()) = 4
+                                 THEN dutyTime5s
+                             WHEN WEEKDAY(NOW()) = 5
+                                 THEN dutyTime6s
+                      END) AS OPENTIME
+                      , (CASE
+                             WHEN WEEKDAY(NOW()) = 0
+                                 THEN dutyTime1c
+                             WHEN WEEKDAY(NOW()) = 1
+                                 THEN dutyTime2c
+                             WHEN WEEKDAY(NOW()) = 2
+                                 THEN dutyTime3c
+                             WHEN WEEKDAY(NOW()) = 3
+                                 THEN dutyTime4c
+                             WHEN WEEKDAY(NOW()) = 4
+                                 THEN dutyTime5c
+                             WHEN WEEKDAY(NOW()) = 5
+                                 THEN dutyTime6c
+                     END) AS CLOSETIME
+                  FROM pharmacy.pharmarcySeoul P
+                 INNER JOIN pharmacy.drugInventory D ON P.hpid = D.hpid
+                 <if test = "swLat != '' and swLat != null ">
+                     WHERE wgs84Lat BETWEEN #{swLat} AND #{neLat}
+                 </if>
+                 <if test = "swLng != '' and swLng != null">
+                     AND wgs84Lon BETWEEN #{swLng} AND #{neLng}
+                 </if>
+                    AND D.drugName LIKE CONCAT('%',#{searchDrugNm},'%')
+            ) T;
+
     </select>
-
-
 </mapper>
